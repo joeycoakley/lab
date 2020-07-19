@@ -4,5 +4,5 @@ project:
     - us-east-1
 
 tests:
-  ec2-test:
-    template: ./ec2.yml
+  sqs-test:
+    template: ./sqs.yml
