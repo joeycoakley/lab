@@ -1,0 +1,8 @@
+project:
+  name: taskcat-example
+  regions:
+    - us-east-1
+
+tests:
+  ec2-test:
+    template: ./ec2.yml
