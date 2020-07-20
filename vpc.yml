@@ -1,0 +1,190 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Basic Test
+
+Resources:
+  rVPC:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: True
+      EnableDnsSupport: True
+      InstanceTenancy: default
+      Tags:
+        - Key: "Name"
+          Value: !Sub '${AWS::StackId}-VPC'
+
+  rPrivateSubnetA:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AssignIpv6AddressOnCreation: False
+      AvailabilityZone: !Select
+        - 0
+        - !GetAZs
+          Ref: 'AWS::Region'
+      CidrBlock: 10.0.1.0/25
+      Ipv6CidrBlock: String
+      MapPublicIpOnLaunch: False
+      Tags:
+        - Key: "Name"
+          Value: !Sub '${AWS::StackId}-PrivateSubnet-A'
+      VpcId: !Ref rVPC
+
+  rPrivateSubnetB:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AssignIpv6AddressOnCreation: False
+      AvailabilityZone: !Select
+        - 1
+        - !GetAZs
+          Ref: 'AWS::Region'
+      CidrBlock: 10.0.2.0/25
+      Ipv6CidrBlock: String
+      MapPublicIpOnLaunch: False
+      Tags:
+        - Key: "Name"
+          Value: !Sub '${AWS::StackId}-PrivateSubnet-B'
+      VpcId: !Ref rVPC
+
+  rPublicSubnetA:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AssignIpv6AddressOnCreation: False
+      AvailabilityZone: !Select
+        - 0
+        - !GetAZs
+          Ref: 'AWS::Region'
+      CidrBlock: 10.0.1.128/25
+      Ipv6CidrBlock: String
+      MapPublicIpOnLaunch: False
+      Tags:
+        - Key: "Name"
+          Value: !Sub '${AWS::StackId}-PublicSubnet-A'
+      VpcId: !Ref rVPC
+
+  rPublicSubnetB:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AssignIpv6AddressOnCreation: False
+      AvailabilityZone: !Select
+        - 1
+        - !GetAZs
+          Ref: 'AWS::Region'
+      CidrBlock: 10.0.2.128/25
+      Ipv6CidrBlock: String
+      MapPublicIpOnLaunch: False
+      Tags:
+        - Key: "Name"
+          Value: !Sub '${AWS::StackId}-PublicSubnet-B'
+      VpcId: !Ref rVPC
+
+  rIGW:
+    Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-IGW"
+
+  rIGWAttach:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      InternetGatewayId: !Ref rIGW
+      VpcId: !Ref rVPC
+
+# NAT Gateway
+
+  rNatGwEipA:
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-NatGatewayEipA"
+
+  rNatGwEipB:
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-NatGatewayEipB"
+  
+  rNatGwA:
+    Type: "AWS::EC2::NatGateway"
+    Properties:
+      AllocationId: !Ref rNatGwEipA
+      SubnetId: !Ref rPublicSubnetA
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-NatGatewayA"
+
+  rNatGwB:
+    Type: "AWS::EC2::NatGateway"
+    Properties:
+      AllocationId: !Ref rNatGwEipB
+      SubnetId: !Ref rPublicSubnetB
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-NatGatewayB"
+
+# Routing A Side
+  
+  rPublicRTA:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-PublicRT-A"
+      VpcId: !Ref rVPC
+
+  rPrivateRTA:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-PublicRT-A"
+      VpcId: !Ref rVPC
+  
+  rPublicRTADefaultRoute:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref rIGW
+      RouteTableId: rPublicRTA
+    
+  rPrivateRTADefaultRoute:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref rNatGwA
+      RouteTableId: rPrivateRTA
+
+# Routing B Side
+
+  rPublicRTB:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-PublicRT-B"
+      VpcId: !Ref rVPC
+
+  rPrivateRTB:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackId}-PublicRT-B"
+      VpcId: !Ref rVPC
+  
+  rPublicRTBDefaultRoute:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref rIGW
+      RouteTableId: rPublicRTB
+    
+  rPrivateRTBDefaultRoute:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref rNatGwB
+      RouteTableId: rPrivateRTB
