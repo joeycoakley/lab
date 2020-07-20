@@ -17,7 +17,6 @@ Resources:
   rPrivateSubnetA:
     Type: "AWS::EC2::Subnet"
     Properties:
-      AssignIpv6AddressOnCreation: False
       AvailabilityZone: !Select
         - 0
         - !GetAZs
@@ -32,7 +31,6 @@ Resources:
   rPrivateSubnetB:
     Type: "AWS::EC2::Subnet"
     Properties:
-      AssignIpv6AddressOnCreation: False
       AvailabilityZone: !Select
         - 1
         - !GetAZs
@@ -47,7 +45,6 @@ Resources:
   rPublicSubnetA:
     Type: "AWS::EC2::Subnet"
     Properties:
-      AssignIpv6AddressOnCreation: False
       AvailabilityZone: !Select
         - 0
         - !GetAZs
@@ -62,7 +59,6 @@ Resources:
   rPublicSubnetB:
     Type: "AWS::EC2::Subnet"
     Properties:
-      AssignIpv6AddressOnCreation: False
       AvailabilityZone: !Select
         - 1
         - !GetAZs
