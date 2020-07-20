@@ -56,7 +56,7 @@ Resources:
           Ref: 'AWS::Region'
       CidrBlock: 10.0.1.128/25
       Ipv6CidrBlock: String
-      MapPublicIpOnLaunch: False
+      MapPublicIpOnLaunch: True
       Tags:
         - Key: "Name"
           Value: !Sub '${AWS::StackId}-PublicSubnet-A'
@@ -72,7 +72,7 @@ Resources:
           Ref: 'AWS::Region'
       CidrBlock: 10.0.2.128/25
       Ipv6CidrBlock: String
-      MapPublicIpOnLaunch: False
+      MapPublicIpOnLaunch: True
       Tags:
         - Key: "Name"
           Value: !Sub '${AWS::StackId}-PublicSubnet-B'
@@ -148,14 +148,14 @@ Resources:
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref rIGW
-      RouteTableId: rPublicRTA
+      RouteTableId: !Ref rPublicRTA
     
   rPrivateRTADefaultRoute:
     Type: "AWS::EC2::Route"
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref rNatGwA
-      RouteTableId: rPrivateRTA
+      RouteTableId: !Ref rPrivateRTA
 
 # Routing B Side
 
@@ -180,11 +180,11 @@ Resources:
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref rIGW
-      RouteTableId: rPublicRTB
+      RouteTableId: !Ref rPublicRTB
     
   rPrivateRTBDefaultRoute:
     Type: "AWS::EC2::Route"
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref rNatGwB
-      RouteTableId: rPrivateRTB
+      RouteTableId: !Ref rPrivateRTB
