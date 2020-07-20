@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: |
-  Basic Test
+  Base VPC
 
 Resources:
   rVPC:
@@ -12,7 +12,7 @@ Resources:
       InstanceTenancy: default
       Tags:
         - Key: "Name"
-          Value: !Sub '${AWS::StackId}-VPC'
+          Value: !Sub '${AWS::StackName}-VPC'
 
   rPrivateSubnetA:
     Type: "AWS::EC2::Subnet"
@@ -25,7 +25,7 @@ Resources:
       MapPublicIpOnLaunch: False
       Tags:
         - Key: "Name"
-          Value: !Sub '${AWS::StackId}-PrivateSubnet-A'
+          Value: !Sub '${AWS::StackName}-PrivateSubnet-A'
       VpcId: !Ref rVPC
 
   rPrivateSubnetB:
@@ -39,7 +39,7 @@ Resources:
       MapPublicIpOnLaunch: False
       Tags:
         - Key: "Name"
-          Value: !Sub '${AWS::StackId}-PrivateSubnet-B'
+          Value: !Sub '${AWS::StackName}-PrivateSubnet-B'
       VpcId: !Ref rVPC
 
   rPublicSubnetA:
@@ -53,7 +53,7 @@ Resources:
       MapPublicIpOnLaunch: True
       Tags:
         - Key: "Name"
-          Value: !Sub '${AWS::StackId}-PublicSubnet-A'
+          Value: !Sub '${AWS::StackName}-PublicSubnet-A'
       VpcId: !Ref rVPC
 
   rPublicSubnetB:
@@ -67,7 +67,7 @@ Resources:
       MapPublicIpOnLaunch: True
       Tags:
         - Key: "Name"
-          Value: !Sub '${AWS::StackId}-PublicSubnet-B'
+          Value: !Sub '${AWS::StackName}-PublicSubnet-B'
       VpcId: !Ref rVPC
 
   rIGW:
@@ -75,7 +75,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-IGW"
+          Value: !Sub "${AWS::StackName}-IGW"
 
   rIGWAttach:
     Type: "AWS::EC2::VPCGatewayAttachment"
@@ -91,7 +91,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-NatGatewayEipA"
+          Value: !Sub "${AWS::StackName}-NatGatewayEipA"
 
   rNatGwEipB:
     Type: "AWS::EC2::EIP"
@@ -99,7 +99,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-NatGatewayEipB"
+          Value: !Sub "${AWS::StackName}-NatGatewayEipB"
   
   rNatGwA:
     Type: "AWS::EC2::NatGateway"
@@ -108,7 +108,7 @@ Resources:
       SubnetId: !Ref rPublicSubnetA
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-NatGatewayA"
+          Value: !Sub "${AWS::StackName}-NatGatewayA"
 
   rNatGwB:
     Type: "AWS::EC2::NatGateway"
@@ -117,7 +117,7 @@ Resources:
       SubnetId: !Ref rPublicSubnetB
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-NatGatewayB"
+          Value: !Sub "${AWS::StackName}-NatGatewayB"
 
 # Routing A Side
   
@@ -126,7 +126,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-PublicRT-A"
+          Value: !Sub "${AWS::StackName}-PublicRT-A"
       VpcId: !Ref rVPC
 
   rPrivateRTA:
@@ -134,7 +134,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-PublicRT-A"
+          Value: !Sub "${AWS::StackName}-PublicRT-A"
       VpcId: !Ref rVPC
   
   rPublicRTADefaultRoute:
@@ -158,7 +158,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-PublicRT-B"
+          Value: !Sub "${AWS::StackName}-PublicRT-B"
       VpcId: !Ref rVPC
 
   rPrivateRTB:
@@ -166,7 +166,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackId}-PublicRT-B"
+          Value: !Sub "${AWS::StackName}-PublicRT-B"
       VpcId: !Ref rVPC
   
   rPublicRTBDefaultRoute:
