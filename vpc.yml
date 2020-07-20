@@ -87,6 +87,7 @@ Resources:
 
   rNatGwEipA:
     Type: "AWS::EC2::EIP"
+    DependsOn: rIGWAttach
     Properties:
       Tags:
         - Key: "Name"
@@ -94,6 +95,7 @@ Resources:
 
   rNatGwEipB:
     Type: "AWS::EC2::EIP"
+    DependsOn: rIGWAttach
     Properties:
       Tags:
         - Key: "Name"
@@ -101,7 +103,6 @@ Resources:
   
   rNatGwA:
     Type: "AWS::EC2::NatGateway"
-    DependsOn: rNatGwEipA
     Properties:
       AllocationId: !GetAtt rNatGwEipA.AllocationId
       SubnetId: !Ref rPublicSubnetA
@@ -111,7 +112,6 @@ Resources:
 
   rNatGwB:
     Type: "AWS::EC2::NatGateway"
-    DependsOn: rNatGwEipB
     Properties:
       AllocationId: !GetAtt rNatGwEipB.AllocationId
       SubnetId: !Ref rPublicSubnetB
