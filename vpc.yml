@@ -144,10 +144,9 @@ Resources:
     
   rPrivateRTADefaultRoute:
     Type: "AWS::EC2::Route"
-    DependsOn: rNatGwEipA
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref rNatGwA
+      NatGatewayId: !Ref rNatGwA
       RouteTableId: !Ref rPrivateRTA
 
 # Routing B Side
@@ -170,7 +169,6 @@ Resources:
   
   rPublicRTBDefaultRoute:
     Type: "AWS::EC2::Route"
-    DependsOn: rNatGwEipB
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref rIGW
@@ -178,8 +176,7 @@ Resources:
     
   rPrivateRTBDefaultRoute:
     Type: "AWS::EC2::Route"
-    DependsOn: rNatGwEipB
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref rNatGwB
+      NatGatewayId: !Ref rNatGwB
       RouteTableId: !Ref rPrivateRTB
