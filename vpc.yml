@@ -23,7 +23,6 @@ Resources:
         - !GetAZs
           Ref: 'AWS::Region'
       CidrBlock: 10.0.1.0/25
-      Ipv6CidrBlock: String
       MapPublicIpOnLaunch: False
       Tags:
         - Key: "Name"
@@ -39,7 +38,6 @@ Resources:
         - !GetAZs
           Ref: 'AWS::Region'
       CidrBlock: 10.0.2.0/25
-      Ipv6CidrBlock: String
       MapPublicIpOnLaunch: False
       Tags:
         - Key: "Name"
@@ -55,7 +53,6 @@ Resources:
         - !GetAZs
           Ref: 'AWS::Region'
       CidrBlock: 10.0.1.128/25
-      Ipv6CidrBlock: String
       MapPublicIpOnLaunch: True
       Tags:
         - Key: "Name"
@@ -71,7 +68,6 @@ Resources:
         - !GetAZs
           Ref: 'AWS::Region'
       CidrBlock: 10.0.2.128/25
-      Ipv6CidrBlock: String
       MapPublicIpOnLaunch: True
       Tags:
         - Key: "Name"
