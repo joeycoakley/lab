@@ -188,7 +188,7 @@ Resources:
     Type: "AWS::EC2::CustomerGateway"
     Properties:
       BgpAsn: 65000
-      IpAddress: '{{resolve:ssm:JOEYHOMEIP}}'
+      IpAddress: '{{resolve:ssm:JOEYHOMEIP:1}}'
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-JoeyHomeCGW"
@@ -219,7 +219,7 @@ Resources:
       Type: ipsec.1
       VpnGatewayId: !Ref rVpnGw
       VpnTunnelOptionsSpecifications:
-        - PreSharedKey: '{{resolve:ssm:JOEYHOMEPSK}}'
+        - PreSharedKey: '{{resolve:ssm:JOEYHOMEPSK:1}}'
 
   rVpnRoutePublicA:
     Type: "AWS::EC2::Route"
