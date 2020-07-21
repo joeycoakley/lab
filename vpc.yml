@@ -182,3 +182,54 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref rNatGwB
       RouteTableId: !Ref rPrivateRTB
+
+# VPN Connectivity
+  rCGWJoeyHome:
+    Type: "AWS::EC2::CustomerGateway"
+    Properties:
+      BgpAsn: 65000
+      IpAddress: '{{resolve:ssm:JOEYHOMEIP}}'
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-JoeyHomeCGW"
+      Type: ipsec.1
+  
+  rVpnGw:
+    Type: "AWS::EC2::VPNGateway"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-VGW"
+      Type: ipsec.1
+
+  rVpnGwAttach:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref rVPC
+      VpnGatewayId: !Ref rVpnGw
+  
+  rVpnConn:
+    Type: "AWS::EC2::VPNConnection"
+    Properties:
+      CustomerGatewayId: !Ref rCGWJoeyHome
+      StaticRoutesOnly: True
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-VPNConnection"
+      Type: ipsec.1
+      VpnGatewayId: !Ref rVpnGw
+      VpnTunnelOptionsSpecifications:
+        - PreSharedKey: '{{resolve:ssm:JOEYHOMEPSK}}'
+
+  rVpnRoutePublicA:
+    Type: "AWS::EC2::Route"
+    Properties:
+      DestinationCidrBlock: 192.168.0.0/24
+      GatewayId: !Ref rVpnGw
+      RouteTableId: !Ref rPublicRTA
+  
+  
+Outputs:
+  rVpnConn:
+    Description: VPN Attributes
+    Value: VpnTunnelOptionsSpecifications
