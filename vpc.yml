@@ -256,7 +256,7 @@ Resources:
     Type: "AWS::EC2::CustomerGateway"
     Properties:
       BgpAsn: 65000
-      IpAddress: '{{resolve:ssm:JOEYHOMEIP:1}}'
+      IpAddress: '{{resolve:secretsmanager:JOEYHOMEPSK:SecretString:JOEYHOMEIP}}'
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-JoeyHomeCGW"
