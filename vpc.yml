@@ -250,13 +250,25 @@ Resources:
   #   Properties:
   #     ServiceToken: !GetAtt rPskLambda.Arn
   #     FunctionName: lambda_function.lambda_handler
-      
+
+  rVpnPsk:
+    Type: "AWS::SecretsManager::Secret"
+    Properties:
+      Description: Randomly generated string for ipsec VPN PSK
+      GenerateSecretString:
+        ExcludePunctuation: true
+        IncludeSpace: false
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-PSK"
+      Name: VPNPSK
+    
 
   rCGWJoeyHome:
     Type: "AWS::EC2::CustomerGateway"
     Properties:
       BgpAsn: 65000
-      IpAddress: '{{resolve:secretsmanager:JOEYHOMEPSK:SecretString:JOEYHOMEIP}}'
+      IpAddress: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:JOEYHOMEVPN-XxgCwR:JOEYHOMEIP}}'
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-JoeyHomeCGW"
@@ -287,7 +299,7 @@ Resources:
       Type: ipsec.1
       VpnGatewayId: !Ref rVpnGw
       VpnTunnelOptionsSpecifications:
-        - PreSharedKey: '{{resolve:secretsmanager:JOEYHOMEPSK:SecretString:JOEYHOMEPSK}}'
+        - PreSharedKey: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:JOEYHOMEVPN-XxgCwR:JOEYHOMEPSK}}'
 
   rVpnRoutePublicA:
     Type: "AWS::EC2::Route"
