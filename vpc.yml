@@ -251,18 +251,6 @@ Resources:
   #     ServiceToken: !GetAtt rPskLambda.Arn
   #     FunctionName: lambda_function.lambda_handler
 
-  rVpnPsk:
-    Type: "AWS::SecretsManager::Secret"
-    Properties:
-      Description: Randomly generated string for ipsec VPN PSK
-      GenerateSecretString:
-        ExcludePunctuation: true
-        IncludeSpace: false
-      Tags:
-        - Key: "Name"
-          Value: !Sub "${AWS::StackName}-PSK"
-      Name: VPNPSK
-    
 
   rCGWJoeyHome:
     Type: "AWS::EC2::CustomerGateway"
