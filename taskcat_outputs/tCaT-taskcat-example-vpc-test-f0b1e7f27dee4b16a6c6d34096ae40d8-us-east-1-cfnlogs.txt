@@ -1,0 +1,31 @@
+-----------------------------------------------------------------------------
+Region: us-east-1
+StackName: tCaT-taskcat-example-vpc-test-f0b1e7f27dee4b16a6c6d34096ae40d8
+*****************************************************************************
+ResourceStatusReason:  
+The following resource(s) failed to create: [rVpnPsk, rVpnGw, rIGW, rVPC,
+rCGWJoeyHome].
+*****************************************************************************
+*****************************************************************************
+Events:  
+TimeStamp                         ResourceStatus      ResourceType                 LogicalResourceId                                               ResourceStatusReason
+--------------------------------  ------------------  ---------------------------  --------------------------------------------------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2020-07-23 22:23:23.574000+00:00  CREATE_FAILED       AWS::CloudFormation::Stack   tCaT-taskcat-example-vpc-test-f0b1e7f27dee4b16a6c6d34096ae40d8  The following resource(s) failed to create: [rVpnPsk, rVpnGw, rIGW, rVPC, rCGWJoeyHome].
+2020-07-23 22:23:22.809000+00:00  CREATE_FAILED       AWS::SecretsManager::Secret  rVpnPsk                                                         Resource creation cancelled
+2020-07-23 22:23:22.764000+00:00  CREATE_FAILED       AWS::EC2::VPC                rVPC                                                            Resource creation cancelled
+2020-07-23 22:23:22.710000+00:00  CREATE_FAILED       AWS::EC2::VPNGateway         rVpnGw                                                          Resource creation cancelled
+2020-07-23 22:23:22.694000+00:00  CREATE_FAILED       AWS::EC2::InternetGateway    rIGW                                                            Resource creation cancelled
+2020-07-23 22:23:22.367000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPC                rVPC                                                            Resource creation Initiated
+2020-07-23 22:23:22.350000+00:00  CREATE_IN_PROGRESS  AWS::SecretsManager::Secret  rVpnPsk
+2020-07-23 22:23:22.341000+00:00  CREATE_FAILED       AWS::EC2::CustomerGateway    rCGWJoeyHome                                                    Secrets Manager can't find the specified secret. (Service: AWSSecretsManager; Status Code: 400; Error Code: ResourceNotFoundException; Request ID: 3b9c41cf-2919-426f-9b5c-80033a071de3)
+2020-07-23 22:23:22.063000+00:00  CREATE_IN_PROGRESS  AWS::EC2::InternetGateway    rIGW                                                            Resource creation Initiated
+2020-07-23 22:23:22.053000+00:00  CREATE_IN_PROGRESS  AWS::EC2::CustomerGateway    rCGWJoeyHome
+2020-07-23 22:23:21.891000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPNGateway         rVpnGw
+2020-07-23 22:23:21.848000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPC                rVPC
+2020-07-23 22:23:21.689000+00:00  CREATE_IN_PROGRESS  AWS::EC2::InternetGateway    rIGW
+2020-07-23 22:23:16.931000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack   tCaT-taskcat-example-vpc-test-f0b1e7f27dee4b16a6c6d34096ae40d8  User Initiated
+*****************************************************************************
+-----------------------------------------------------------------------------
+Tested on: Thursday, 23. July 2020 06:24PM
+-----------------------------------------------------------------------------
+

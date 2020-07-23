@@ -268,7 +268,7 @@ Resources:
     Type: "AWS::EC2::CustomerGateway"
     Properties:
       BgpAsn: 65000
-      IpAddress: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:JOEYHOMEVPN-XxgCwR:JOEYHOMEIP}}'
+      IpAddress: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:JOEYHOMEVPN-XxgCwR:SecretString:JOEYHOMEIP}}'
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-JoeyHomeCGW"
@@ -299,7 +299,7 @@ Resources:
       Type: ipsec.1
       VpnGatewayId: !Ref rVpnGw
       VpnTunnelOptionsSpecifications:
-        - PreSharedKey: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:JOEYHOMEVPN-XxgCwR:JOEYHOMEPSK}}'
+        - PreSharedKey: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:JOEYHOMEVPN-XxgCwR:SecretString:JOEYHOMEPSK}}'
 
   rVpnRoutePublicA:
     Type: "AWS::EC2::Route"

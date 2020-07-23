@@ -1,0 +1,76 @@
+-----------------------------------------------------------------------------
+Region: us-east-2
+StackName: tCaT-taskcat-example-vpc-test-f0b1e7f27dee4b16a6c6d34096ae40d8
+*****************************************************************************
+ResourceStatusReason:  
+The following resource(s) failed to create: [rPublicSubnetB, rVpnGwAttach,
+rPrivateSubnetA, rIGWAttach, rPrivateSubnetB, rPublicSubnetA, rPublicRTBDefaultRoute,
+rVpnRoutePublicA, rPublicRTADefaultRoute, rVpnConn].
+*****************************************************************************
+*****************************************************************************
+Events:  
+TimeStamp                         ResourceStatus      ResourceType                    LogicalResourceId                                               ResourceStatusReason
+--------------------------------  ------------------  ------------------------------  --------------------------------------------------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2020-07-23 22:23:42.361000+00:00  CREATE_FAILED       AWS::CloudFormation::Stack      tCaT-taskcat-example-vpc-test-f0b1e7f27dee4b16a6c6d34096ae40d8  The following resource(s) failed to create: [rPublicSubnetB, rVpnGwAttach, rPrivateSubnetA, rIGWAttach, rPrivateSubnetB, rPublicSubnetA, rPublicRTBDefaultRoute, rVpnRoutePublicA, rPublicRTADefaultRoute, rVpnConn].
+2020-07-23 22:23:41.748000+00:00  CREATE_FAILED       AWS::EC2::Subnet                rPrivateSubnetB                                                 Resource creation cancelled
+2020-07-23 22:23:41.669000+00:00  CREATE_FAILED       AWS::EC2::Subnet                rPublicSubnetB                                                  Resource creation cancelled
+2020-07-23 22:23:41.628000+00:00  CREATE_FAILED       AWS::EC2::VPCGatewayAttachment  rVpnGwAttach                                                    Resource creation cancelled
+2020-07-23 22:23:41.620000+00:00  CREATE_FAILED       AWS::EC2::Subnet                rPublicSubnetA                                                  Resource creation cancelled
+2020-07-23 22:23:41.615000+00:00  CREATE_FAILED       AWS::EC2::VPNConnection         rVpnConn                                                        Resource creation cancelled
+2020-07-23 22:23:41.615000+00:00  CREATE_FAILED       AWS::EC2::Subnet                rPrivateSubnetA                                                 Resource creation cancelled
+2020-07-23 22:23:41.605000+00:00  CREATE_FAILED       AWS::EC2::Route                 rPublicRTBDefaultRoute                                          Resource creation cancelled
+2020-07-23 22:23:41.598000+00:00  CREATE_FAILED       AWS::EC2::Route                 rPublicRTADefaultRoute                                          Resource creation cancelled
+2020-07-23 22:23:41.587000+00:00  CREATE_FAILED       AWS::EC2::VPCGatewayAttachment  rIGWAttach                                                      Resource creation cancelled
+2020-07-23 22:23:41.185000+00:00  CREATE_FAILED       AWS::EC2::Route                 rVpnRoutePublicA                                                The gateway ID 'vgw-0b9413d0356866673' does not exist (Service: AmazonEC2; Status Code: 400; Error Code: InvalidGatewayID.NotFound; Request ID: 06dcd14c-079f-47e8-9364-d1cc901d9b94)
+2020-07-23 22:23:41.101000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                 rPublicRTBDefaultRoute                                          Resource creation Initiated
+2020-07-23 22:23:40.893000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                 rPublicRTADefaultRoute                                          Resource creation Initiated
+2020-07-23 22:23:40.746000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                 rVpnRoutePublicA
+2020-07-23 22:23:40.696000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                 rPublicRTBDefaultRoute
+2020-07-23 22:23:40.496000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                 rPublicRTADefaultRoute
+2020-07-23 22:23:39.106000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable            rPrivateRTA
+2020-07-23 22:23:39.066000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable            rPublicRTB
+2020-07-23 22:23:38.908000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable            rPublicRTA
+2020-07-23 22:23:38.705000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPublicSubnetB                                                  Resource creation Initiated
+2020-07-23 22:23:38.614000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPublicSubnetA                                                  Resource creation Initiated
+2020-07-23 22:23:38.606000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable            rPrivateRTB
+2020-07-23 22:23:38.426000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPrivateSubnetB                                                 Resource creation Initiated
+2020-07-23 22:23:38.372000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPublicSubnetB
+2020-07-23 22:23:38.325000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCGatewayAttachment  rVpnGwAttach                                                    Resource creation Initiated
+2020-07-23 22:23:38.294000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPrivateSubnetA                                                 Resource creation Initiated
+2020-07-23 22:23:38.256000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPublicRTB                                                      Resource creation Initiated
+2020-07-23 22:23:38.192000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPublicSubnetA
+2020-07-23 22:23:38.181000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPrivateRTA                                                     Resource creation Initiated
+2020-07-23 22:23:38.175000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPublicRTA                                                      Resource creation Initiated
+2020-07-23 22:23:38.147000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCGatewayAttachment  rIGWAttach                                                      Resource creation Initiated
+2020-07-23 22:23:38.095000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPrivateSubnetB
+2020-07-23 22:23:37.976000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPNConnection         rVpnConn                                                        Resource creation Initiated
+2020-07-23 22:23:37.925000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                rPrivateSubnetA
+2020-07-23 22:23:37.875000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPublicRTA
+2020-07-23 22:23:37.858000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPrivateRTA
+2020-07-23 22:23:37.828000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPrivateRTB                                                     Resource creation Initiated
+2020-07-23 22:23:37.800000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCGatewayAttachment  rIGWAttach
+2020-07-23 22:23:37.768000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCGatewayAttachment  rVpnGwAttach
+2020-07-23 22:23:37.716000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPublicRTB
+2020-07-23 22:23:37.545000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable            rPrivateRTB
+2020-07-23 22:23:37.326000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPNConnection         rVpnConn
+2020-07-23 22:23:36.263000+00:00  CREATE_COMPLETE     AWS::EC2::VPC                   rVPC
+2020-07-23 22:23:35.830000+00:00  CREATE_COMPLETE     AWS::EC2::InternetGateway       rIGW
+2020-07-23 22:23:35.758000+00:00  CREATE_COMPLETE     AWS::EC2::VPNGateway            rVpnGw
+2020-07-23 22:23:21.272000+00:00  CREATE_COMPLETE     AWS::SecretsManager::Secret     rVpnPsk
+2020-07-23 22:23:21.133000+00:00  CREATE_IN_PROGRESS  AWS::SecretsManager::Secret     rVpnPsk                                                         Resource creation Initiated
+2020-07-23 22:23:20.821000+00:00  CREATE_COMPLETE     AWS::EC2::CustomerGateway       rCGWJoeyHome
+2020-07-23 22:23:19.964000+00:00  CREATE_IN_PROGRESS  AWS::EC2::CustomerGateway       rCGWJoeyHome                                                    Resource creation Initiated
+2020-07-23 22:23:19.820000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPC                   rVPC                                                            Resource creation Initiated
+2020-07-23 22:23:19.797000+00:00  CREATE_IN_PROGRESS  AWS::EC2::InternetGateway       rIGW                                                            Resource creation Initiated
+2020-07-23 22:23:19.677000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPNGateway            rVpnGw                                                          Resource creation Initiated
+2020-07-23 22:23:19.490000+00:00  CREATE_IN_PROGRESS  AWS::EC2::InternetGateway       rIGW
+2020-07-23 22:23:19.438000+00:00  CREATE_IN_PROGRESS  AWS::SecretsManager::Secret     rVpnPsk
+2020-07-23 22:23:19.438000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPC                   rVPC
+2020-07-23 22:23:19.309000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPNGateway            rVpnGw
+2020-07-23 22:23:19.291000+00:00  CREATE_IN_PROGRESS  AWS::EC2::CustomerGateway       rCGWJoeyHome
+2020-07-23 22:23:15.874000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack      tCaT-taskcat-example-vpc-test-f0b1e7f27dee4b16a6c6d34096ae40d8  User Initiated
+*****************************************************************************
+-----------------------------------------------------------------------------
+Tested on: Thursday, 23. July 2020 06:24PM
+-----------------------------------------------------------------------------
+
