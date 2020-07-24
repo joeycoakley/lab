@@ -291,6 +291,7 @@ Resources:
 
   rVpnRoutePublicA:
     Type: "AWS::EC2::Route"
+    DependsOn: rVpnGwAttach
     Properties:
       DestinationCidrBlock: 192.168.0.0/24
       GatewayId: !Ref rVpnGw
