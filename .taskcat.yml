@@ -7,3 +7,4 @@ project:
 tests:
   vpc-test:
     template: ./vpc.yml
+    parameter_input: parameters.json
