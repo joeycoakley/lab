@@ -289,10 +289,11 @@ Resources:
       VpnTunnelOptionsSpecifications:
         - PreSharedKey: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:VPN-cIU3XR:SecretString:JOEYHOMEPSK}}'
 
-  rVpnRoutePublicA:
-    Type: "AWS::EC2::Route"
-    DependsOn: rVpnGwAttach
+  
+  rVpnRoute:
+    Type: "AWS::EC2::VPNConnectionRoute"
     Properties:
       DestinationCidrBlock: 192.168.0.0/24
-      GatewayId: !Ref rVpnGw
-      RouteTableId: !Ref rPublicRTA
+      VpnConnectionId: !Ref rVpnConn
+    
+  
