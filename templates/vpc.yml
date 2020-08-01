@@ -317,10 +317,10 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       MaxSessionDuration: 3600
-      RoleName: String
+      RoleName: SSMInstanceProfile
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackName}-SSM Instance Profile"
+          Value: SSMInstanceProfile
   
   rIAMInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
