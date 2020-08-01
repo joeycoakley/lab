@@ -145,7 +145,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackName}-PublicRT-A"
+          Value: !Sub "${AWS::StackName}-PrivateRT-A"
       VpcId: !Ref rVPC
   
   rPublicRTADefaultRoute:
@@ -177,7 +177,7 @@ Resources:
     Properties:
       Tags:
         - Key: "Name"
-          Value: !Sub "${AWS::StackName}-PublicRT-B"
+          Value: !Sub "${AWS::StackName}-PrivateRT-B"
       VpcId: !Ref rVPC
   
   rPublicRTBDefaultRoute:
@@ -222,7 +222,6 @@ Resources:
         - !Ref rPrivateRTB
       VpnGatewayId: !Ref rVpnGw
   
-
   rVpnGwAttach:
     Type: "AWS::EC2::VPCGatewayAttachment"
     Properties:
