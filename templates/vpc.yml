@@ -38,6 +38,13 @@ Resources:
         - Key: "Name"
           Value: !Sub '${AWS::StackName}-PrivateSubnet-A'
       VpcId: !Ref rVPC
+    
+  rPrivateSubnetARouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref rPrivateRTA
+      SubnetId: !Ref rPrivateSubnetA
+  
 
   rPrivateSubnetB:
     Type: "AWS::EC2::Subnet"
@@ -53,6 +60,12 @@ Resources:
           Value: !Sub '${AWS::StackName}-PrivateSubnet-B'
       VpcId: !Ref rVPC
 
+  rPrivateSubnetBRouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref rPrivateRTB
+      SubnetId: !Ref rPrivateSubnetB
+
   rPublicSubnetA:
     Type: "AWS::EC2::Subnet"
     Properties:
@@ -67,6 +80,12 @@ Resources:
           Value: !Sub '${AWS::StackName}-PublicSubnet-A'
       VpcId: !Ref rVPC
 
+  rPublicSubnetARouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref rPublicRTA
+      SubnetId: !Ref rPublicSubnetA
+
   rPublicSubnetB:
     Type: "AWS::EC2::Subnet"
     Properties:
@@ -80,6 +99,12 @@ Resources:
         - Key: "Name"
           Value: !Sub '${AWS::StackName}-PublicSubnet-B'
       VpcId: !Ref rVPC
+
+  rPublicSubnetBRouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref rPublicRTB
+      SubnetId: !Ref rPublicSubnetB
 
   rIGW:
     Type: "AWS::EC2::InternetGateway"
