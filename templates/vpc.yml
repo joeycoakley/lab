@@ -212,20 +212,21 @@ Resources:
           Value: !Sub "${AWS::StackName}-VGW"
       Type: ipsec.1
 
-  rVpnRouteProp:
-    Type: "AWS::EC2::VPNGatewayRoutePropagation"
-    Properties:
-      RouteTableIds: #required
-        - !Ref rPublicRTB
-        - !Ref rPublicRTA
-        - !Ref rPrivateRTA
-        - !Ref rPrivateRTB
-      VpnGatewayId: !Ref rVpnGw
-  
   rVpnGwAttach:
     Type: "AWS::EC2::VPCGatewayAttachment"
     Properties:
       VpcId: !Ref rVPC
+      VpnGatewayId: !Ref rVpnGw
+
+  rVpnRouteProp:
+    DependsOn: rVpnGwAttach
+    Type: "AWS::EC2::VPNGatewayRoutePropagation"
+    Properties:
+      RouteTableIds:
+        - !Ref rPublicRTB
+        - !Ref rPublicRTA
+        - !Ref rPrivateRTA
+        - !Ref rPrivateRTB
       VpnGatewayId: !Ref rVpnGw
   
   rVpnConn:
