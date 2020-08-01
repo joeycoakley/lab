@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: |
-  Base VPC
+  Base VPC + Web
 
 Parameters:
   pJoeyIp:
@@ -13,7 +13,13 @@ Parameters:
     Default: '{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:082733122167:secret:VPN-cIU3XR:SecretString:JOEYHOMEPSK}}'
     Description: Pre-Shared Key used for the VPN connection
 
+  LatestAmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+
 Resources:
+################################# BEGINNING OF NETWORK SECTION ##############################################
+
   rVPC:
     Type: "AWS::EC2::VPC"
     Properties:
@@ -272,3 +278,80 @@ Resources:
     Properties:
       DestinationCidrBlock: 192.168.0.0/24
       VpnConnectionId: !Ref rVpnConn
+
+
+########################       END OF NETWORKING SECTION        ##################################
+
+  rWebServerSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: Allow inbound http/https
+      GroupName: !Sub "${AWS::StackName}-web-sg"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: 80
+          ToPort: 80
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: 443
+          ToPort: 443          
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-web-sg"
+      VpcId: !Ref rVPC
+
+  rSSMManagedInstanceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazon.com
+            Action:
+              -  "sts:AssumeRole"
+      Description: "EC2 Instance Profile for SSM Managed Instances"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      MaxSessionDuration: 3600
+      RoleName: String
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-SSM Instance Profile"
+  
+  rIAMInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      InstanceProfileName: SSMManagedInstance
+      Path: /
+      Roles: 
+        - !Ref rSSMManagedInstanceRole
+
+  rLaunchTemplate:
+    Type: "AWS::EC2::LaunchTemplate"
+    Properties:
+      LaunchTemplateName: !Sub "${AWS::StackName}-LaunchTemplate"
+      LaunchTemplateData:
+        IamInstanceProfile: 
+          Arn: !GetAtt rIAMInstanceProfile.Arn
+        ImageId: !Ref LatestAmiId
+        InstanceType: "t2.micro"
+        SecurityGroups:
+          - !Ref rWebServerSecurityGroup
+        UserData: 
+          Fn::Base64: |
+            #!/bin/bash
+            yum update -y
+            yum install httpd -y
+            systemctl start httpd
+            systemctl enable httpd
+            groupadd www
+            usermod -a -G www ec2-user
+            chgrp -R www /var/www
+            chmod 2775 /var/www
+            find /var/www -type d -exec chmod 2775 {} +
+            find /var/www -type f -exec chmod 0664 {} +
+            curl -s http://169.254.169.254/latest/meta-data/instance-id >> /var/www/html/index.html
