@@ -355,3 +355,87 @@ Resources:
             find /var/www -type d -exec chmod 2775 {} +
             find /var/www -type f -exec chmod 0664 {} +
             curl -s http://169.254.169.254/latest/meta-data/instance-id >> /var/www/html/index.html
+
+  rALB:
+    Type: "AWS::ElasticLoadBalancing::LoadBalancer"
+    Properties:
+      AvailabilityZones:
+        - !Select
+          - 0
+          - !GetAZs
+            Ref: 'AWS::Region'
+        - !Select
+          - 1
+          - !GetAZs
+            Ref: 'AWS::Region'
+      CrossZone: True
+      Listeners:
+        - LoadBalancerPort: "80"
+          InstancePort: "80"
+          Protocol: HTTP
+        
+      LoadBalancerName: String
+      SecurityGroups:
+        - !Ref rWebServerSecurityGroup
+      Subnets:
+        - !Ref rPublicSubnetA
+        - !Ref rPublicSubnetB
+      HealthCheck:
+        Target: HTTP:80/
+        HealthyThreshold: "3"
+        UnhealthyThreshold: "5"
+        Interval: "30"
+        Timeout: "5"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-ALB"
+
+  rTargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      HealthCheckEnabled: True
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /
+      HealthCheckPort: "80"
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 10
+      HealthyThresholdCount: 3
+      Name: myLoadBalancerTargetGRoup
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-TargetGroup"
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref rVPC
+  
+  rWebAutoScalingGroup:
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Properties:
+      AutoScalingGroupName: WebASG
+      AvailabilityZones:
+        - !Select
+          - 0
+          - !GetAZs
+            Ref: 'AWS::Region'
+        - !Select
+          - 1
+          - !GetAZs
+            Ref: 'AWS::Region'
+      Cooldown: "30"
+      DesiredCapacity: "4"
+      HealthCheckGracePeriod: 30
+      HealthCheckType: "ELB"
+      LaunchTemplate:
+        LaunchTemplateName: !Ref rLaunchTemplate
+        Version: "latest"
+      LoadBalancerNames:
+        - !Ref rALB
+      MaxSize: "8"
+      MinSize: "2"
+      Tags:
+        - Key: "Name"
+          PropagateAtLaunch: False 
+          Value: !Sub "${AWS::StackName}-Web-ASG"
+      TargetGroupARNs:
+        - !Ref rTargetGroup
