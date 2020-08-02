@@ -344,6 +344,8 @@ Resources:
         InstanceType: "t2.micro"
         SecurityGroups:
           - !Ref rWebServerSecurityGroup
+        Monitoring:
+          Enabled: True
         UserData: 
           Fn::Base64: |
             #!/bin/bash
@@ -362,15 +364,6 @@ Resources:
   rWebALB:
     Type: "AWS::ElasticLoadBalancing::LoadBalancer"
     Properties:
-      # AvailabilityZones:
-      #   - !Select
-      #     - 0
-      #     - !GetAZs
-      #       Ref: 'AWS::Region'
-      #   - !Select
-      #     - 1
-      #     - !GetAZs
-      #       Ref: 'AWS::Region'
       CrossZone: True
       Listeners:
         - LoadBalancerPort: "80"
@@ -411,18 +404,10 @@ Resources:
       VpcId: !Ref rVPC
   
   rWebAutoScalingGroup:
+    DependsOn: rIGWAttach
     Type: "AWS::AutoScaling::AutoScalingGroup"
     Properties:
       AutoScalingGroupName: WebASG
-      AvailabilityZones:
-        - !Select
-          - 0
-          - !GetAZs
-            Ref: 'AWS::Region'
-        - !Select
-          - 1
-          - !GetAZs
-            Ref: 'AWS::Region'
       Cooldown: "30"
       DesiredCapacity: "4"
       HealthCheckGracePeriod: 30
@@ -440,3 +425,6 @@ Resources:
           Value: !Sub "${AWS::StackName}-Web-ASG"
       TargetGroupARNs:
         - !Ref rTargetGroup
+      VPCZoneIdentifier:
+        - !Ref rPublicSubnetA
+        - !Ref rPublicSubnetB
