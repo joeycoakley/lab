@@ -9,3 +9,4 @@ tests:
     parameters:
       pJoeyIp: "100.100.100.100"
       pJoeyHomePsk: "totallybogus"
+      pSsmInstanceProfile: $[taskcat_random-string]

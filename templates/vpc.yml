@@ -17,6 +17,10 @@ Parameters:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 
+  pSsmInstanceProfile:
+    Type: String
+    Default: SSMInstanceProfile
+
 Resources:
 ################################# BEGINNING OF NETWORK SECTION ##############################################
 
@@ -317,7 +321,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       MaxSessionDuration: 3600
-      RoleName: SSMInstanceProfile
+      RoleName: !Ref pSsmInstanceProfile
       Tags:
         - Key: "Name"
           Value: SSMInstanceProfile
@@ -325,7 +329,7 @@ Resources:
   rIAMInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
-      InstanceProfileName: SSMManagedInstance
+      InstanceProfileName: !Ref pSsmInstanceProfile
       Path: /
       Roles: 
         - !Ref rSSMManagedInstanceRole
@@ -428,7 +432,7 @@ Resources:
       HealthCheckType: "ELB"
       LaunchTemplate:
         LaunchTemplateName: !Ref rLaunchTemplate
-        Version: "latest"
+        Version: !GetAtt rLaunchTemplate.LatestVersionNumber
       LoadBalancerNames:
         - !Ref rALB
       MaxSize: "8"
