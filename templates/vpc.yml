@@ -337,7 +337,6 @@ Resources:
   rLaunchTemplate:
     Type: "AWS::EC2::LaunchTemplate"
     Properties:
-      LaunchTemplateName: !Sub "${AWS::StackName}-LaunchTemplate"
       LaunchTemplateData:
         IamInstanceProfile: 
           Arn: !GetAtt rIAMInstanceProfile.Arn
@@ -429,7 +428,7 @@ Resources:
       HealthCheckGracePeriod: 30
       HealthCheckType: "ELB"
       LaunchTemplate:
-        LaunchTemplateName: !Ref rLaunchTemplate
+        LaunchTemplateId: !Ref rLaunchTemplate
         Version: !GetAtt rLaunchTemplate.LatestVersionNumber
       LoadBalancerNames:
         - !Ref rWebALB
