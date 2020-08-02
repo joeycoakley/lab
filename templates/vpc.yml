@@ -337,6 +337,7 @@ Resources:
   rLaunchTemplate:
     Type: "AWS::EC2::LaunchTemplate"
     Properties:
+      LaunchTemplateName: !Sub "${AWS::StackName}-lt"
       LaunchTemplateData:
         IamInstanceProfile: 
           Arn: !GetAtt rIAMInstanceProfile.Arn
