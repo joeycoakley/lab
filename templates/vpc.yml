@@ -17,6 +17,10 @@ Parameters:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 
+  pSsmInstanceProfile:
+    Type: String
+    Default: SSMInstanceProfile
+
 Resources:
 ################################# BEGINNING OF NETWORK SECTION ##############################################
 
@@ -286,7 +290,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupDescription: Allow inbound http/https
-      GroupName: !Sub "${AWS::StackName}-web-sg"
+      # GroupName: !Sub "${AWS::StackName}-web-sg"
       SecurityGroupIngress:
         - IpProtocol: tcp
           CidrIp: 0.0.0.0/0
@@ -317,7 +321,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       MaxSessionDuration: 3600
-      RoleName: SSMInstanceProfile
+      RoleName: !Ref pSsmInstanceProfile
       Tags:
         - Key: "Name"
           Value: SSMInstanceProfile
@@ -325,7 +329,7 @@ Resources:
   rIAMInstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
-      InstanceProfileName: SSMManagedInstance
+      InstanceProfileName: !Ref pSsmInstanceProfile
       Path: /
       Roles: 
         - !Ref rSSMManagedInstanceRole
@@ -333,14 +337,16 @@ Resources:
   rLaunchTemplate:
     Type: "AWS::EC2::LaunchTemplate"
     Properties:
-      LaunchTemplateName: !Sub "${AWS::StackName}-LaunchTemplate"
+      LaunchTemplateName: !Sub "${AWS::StackName}-lt"
       LaunchTemplateData:
         IamInstanceProfile: 
           Arn: !GetAtt rIAMInstanceProfile.Arn
         ImageId: !Ref LatestAmiId
         InstanceType: "t2.micro"
-        SecurityGroups:
-          - !Ref rWebServerSecurityGroup
+        SecurityGroupIds:
+          - !GetAtt rWebServerSecurityGroup.GroupId
+        Monitoring:
+          Enabled: True
         UserData: 
           Fn::Base64: |
             #!/bin/bash
@@ -355,3 +361,92 @@ Resources:
             find /var/www -type d -exec chmod 2775 {} +
             find /var/www -type f -exec chmod 0664 {} +
             curl -s http://169.254.169.254/latest/meta-data/instance-id >> /var/www/html/index.html
+
+
+  rWebALB:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      IpAddressType: ipv4
+      Scheme: internet-facing
+      SecurityGroups:
+        - !GetAtt rWebServerSecurityGroup.GroupId
+      Subnets:
+        - !Ref rPublicSubnetA
+        - !Ref rPublicSubnetB
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-ALB"
+      Type: application
+  
+
+  rTargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      HealthCheckEnabled: True
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /
+      HealthCheckPort: "80"
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 10
+      HealthyThresholdCount: 3
+      Name: myLoadBalancerTargetGRoup
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-TargetGroup"
+      TargetType: instance
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref rVPC
+  
+  rWebAutoScalingGroup:
+    DependsOn: rIGWAttach
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Properties:
+      AutoScalingGroupName: WebASG
+      Cooldown: "30"
+      DesiredCapacity: "4"
+      HealthCheckGracePeriod: 30
+      HealthCheckType: "ELB"
+      LaunchTemplate:
+        LaunchTemplateId: !Ref rLaunchTemplate
+        Version: !GetAtt rLaunchTemplate.LatestVersionNumber
+      MaxSize: "8"
+      MinSize: "2"
+      Tags:
+        - Key: "Name"
+          PropagateAtLaunch: False 
+          Value: !Sub "${AWS::StackName}-Web-ASG"
+      TargetGroupARNs:
+        - !Ref rTargetGroup
+      VPCZoneIdentifier:
+        - !Ref rPublicSubnetA
+        - !Ref rPublicSubnetB
+    
+  rALBListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref rTargetGroup
+      LoadBalancerArn: !Ref rWebALB
+      Port: 80
+      Protocol: HTTP
+  
+  # rALBListenerRule1:
+  #   Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+  #   Properties:
+  #     Actions:
+  #       - Type: forward
+  #         TargetGroupArn: !Ref rTargetGroup
+  #     Conditions:
+  #       - Field: http-header
+  #         HttpHeaderConfig:
+  #           HttpHeaderName: "User-Agent"
+  #           Values:
+  #             - "*Chrome*"
+  #             - "*Safari*"
+  #             - "*Firefox*"
+  #     ListenerArn: !Ref rALBListener
+  #     Priority: 1
+  
