@@ -428,6 +428,7 @@ Resources:
     Properties:
       DefaultActions:
         - Type: forward
+          TargetGroupArn: !Ref rTargetGroup
       LoadBalancerArn: !Ref rWebALB
       Port: 80
       Protocol: HTTP
