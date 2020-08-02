@@ -344,7 +344,7 @@ Resources:
         ImageId: !Ref LatestAmiId
         InstanceType: "t2.micro"
         SecurityGroups:
-          - !Ref rWebServerSecurityGroup
+          - !GetAtt rWebServerSecurityGroup.GroupId
         Monitoring:
           Enabled: True
         UserData: 
