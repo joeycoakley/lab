@@ -362,28 +362,22 @@ Resources:
             find /var/www -type f -exec chmod 0664 {} +
             curl -s http://169.254.169.254/latest/meta-data/instance-id >> /var/www/html/index.html
 
+
   rWebALB:
-    Type: "AWS::ElasticLoadBalancing::LoadBalancer"
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
-      CrossZone: True
-      Listeners:
-        - LoadBalancerPort: "80"
-          InstancePort: "80"
-          Protocol: HTTP
+      IpAddressType: ipv4
+      Scheme: internet-facing
       SecurityGroups:
-        - !Ref rWebServerSecurityGroup
+        - !GetAtt rWebServerSecurityGroup.GroupId
       Subnets:
         - !Ref rPublicSubnetA
         - !Ref rPublicSubnetB
-      HealthCheck:
-        Target: HTTP:80/
-        HealthyThreshold: "3"
-        UnhealthyThreshold: "5"
-        Interval: "30"
-        Timeout: "5"
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-ALB"
+      Type: application
+  
 
   rTargetGroup:
     Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
@@ -401,6 +395,7 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-TargetGroup"
+      TargetType: instance
       UnhealthyThresholdCount: 2
       VpcId: !Ref rVPC
   
@@ -416,8 +411,6 @@ Resources:
       LaunchTemplate:
         LaunchTemplateId: !Ref rLaunchTemplate
         Version: !GetAtt rLaunchTemplate.LatestVersionNumber
-      LoadBalancerNames:
-        - !Ref rWebALB
       MaxSize: "8"
       MinSize: "2"
       Tags:
@@ -429,3 +422,29 @@ Resources:
       VPCZoneIdentifier:
         - !Ref rPublicSubnetA
         - !Ref rPublicSubnetB
+    
+  rALBListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+      LoadBalancerArn: !Ref rWebALB
+      Port: 80
+      Protocol: HTTP
+  
+  rALBListenerRule1:
+    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref rTargetGroup
+      Conditions: #required
+        - HttpHeaderConfig:
+            HttpHeaderName: "User-Agent"
+            Values:
+              - "*Chrome*"
+              - "*Safari*"
+              - "*Firefox*"
+      ListenerArn: !Ref rALBListener
+      Priority: 1
+  
