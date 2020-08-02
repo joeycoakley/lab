@@ -360,25 +360,23 @@ Resources:
             find /var/www -type f -exec chmod 0664 {} +
             curl -s http://169.254.169.254/latest/meta-data/instance-id >> /var/www/html/index.html
 
-  rALB:
+  rWebALB:
     Type: "AWS::ElasticLoadBalancing::LoadBalancer"
     Properties:
-      AvailabilityZones:
-        - !Select
-          - 0
-          - !GetAZs
-            Ref: 'AWS::Region'
-        - !Select
-          - 1
-          - !GetAZs
-            Ref: 'AWS::Region'
+      # AvailabilityZones:
+      #   - !Select
+      #     - 0
+      #     - !GetAZs
+      #       Ref: 'AWS::Region'
+      #   - !Select
+      #     - 1
+      #     - !GetAZs
+      #       Ref: 'AWS::Region'
       CrossZone: True
       Listeners:
         - LoadBalancerPort: "80"
           InstancePort: "80"
           Protocol: HTTP
-        
-      LoadBalancerName: String
       SecurityGroups:
         - !Ref rWebServerSecurityGroup
       Subnets:
@@ -434,7 +432,7 @@ Resources:
         LaunchTemplateName: !Ref rLaunchTemplate
         Version: !GetAtt rLaunchTemplate.LatestVersionNumber
       LoadBalancerNames:
-        - !Ref rALB
+        - !Ref rWebALB
       MaxSize: "8"
       MinSize: "2"
       Tags:
